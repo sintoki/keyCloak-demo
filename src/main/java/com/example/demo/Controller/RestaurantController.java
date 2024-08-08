@@ -8,6 +8,7 @@ import com.example.demo.entity.MenuItem;
 import com.example.demo.entity.Restaurant;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -45,16 +46,15 @@ public class RestaurantController {
     }
 
     @PostMapping("/create")
-    // admin can access
-//    @PreAuthorize("hasRole('admin')")
+    //admin can access
+  @PreAuthorize("hasRole('admin')")
     public Restaurant createRestaurant( @RequestBody Restaurant restaurant) {
         return restaurantRepository.save(restaurant);
     }
 
     @PostMapping
     @RequestMapping("/menu")
-//    @PreAuthorize("hasRole('manager')")
-    // manager can access
+   @PreAuthorize("hasRole('manager')")
     public Menu createMenu( @RequestBody Menu menu) {
         menuRepository.save(menu);
         List<MenuItem> menuItems = menu.getMenuItems();
@@ -69,6 +69,7 @@ public class RestaurantController {
         return menu;
     }
 @PutMapping("/menu/item/{itemId}/{price}")
+@PreAuthorize("hasRole('owner')")
         public MenuItem updateMenuItemPrice(@PathVariable Long itemId, @PathVariable BigDecimal price)
         {
 //
